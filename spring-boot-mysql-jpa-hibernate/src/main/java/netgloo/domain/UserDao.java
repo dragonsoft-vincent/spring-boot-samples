@@ -1,4 +1,4 @@
-package netgloo.models;
+package netgloo.domain;
 
 import java.util.List;
 

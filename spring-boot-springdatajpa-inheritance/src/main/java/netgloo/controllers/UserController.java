@@ -1,11 +1,11 @@
 package netgloo.controllers;
 
-import netgloo.models.Company;
-import netgloo.models.CompanyRepository;
-import netgloo.models.Person;
-import netgloo.models.PersonRepository;
-import netgloo.models.User;
-import netgloo.models.UserRepository;
+import netgloo.domain.Company;
+import netgloo.domain.CompanyRepository;
+import netgloo.domain.Person;
+import netgloo.domain.PersonRepository;
+import netgloo.domain.User;
+import netgloo.domain.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

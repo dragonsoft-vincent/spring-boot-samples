@@ -1,4 +1,4 @@
-package netgloo.models;
+package netgloo.domain;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;

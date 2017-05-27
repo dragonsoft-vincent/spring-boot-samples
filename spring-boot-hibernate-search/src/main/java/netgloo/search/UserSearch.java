@@ -1,16 +1,14 @@
 package netgloo.search;
 
-import java.util.List;
+import netgloo.domain.User;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
-import netgloo.models.User;
-
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.query.dsl.QueryBuilder;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
 /**
  * Search methods for the entity User using Hibernate search.

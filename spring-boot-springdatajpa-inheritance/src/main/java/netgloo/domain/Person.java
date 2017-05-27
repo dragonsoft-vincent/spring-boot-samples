@@ -1,11 +1,11 @@
-package netgloo.models;
+package netgloo.domain;
 
 import javax.persistence.Entity;
 
 /**
  * The Person entity (a subtype of User).
  * 
- * @see netgloo.models.User
+ * @see netgloo.domain.User
  */
 @Entity
 public class Person extends User {

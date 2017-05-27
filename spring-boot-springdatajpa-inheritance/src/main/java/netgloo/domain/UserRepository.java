@@ -1,11 +1,11 @@
-package netgloo.models;
+package netgloo.domain;
 
 import javax.transaction.Transactional;
 
 /**
  * Repository for the entity User.
  * 
- * @see netgloo.models.UserBaseRepository
+ * @see netgloo.domain.UserBaseRepository
  */
 @Transactional
 public interface UserRepository extends UserBaseRepository<User> { }

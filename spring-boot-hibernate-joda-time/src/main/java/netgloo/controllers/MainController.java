@@ -1,7 +1,7 @@
 package netgloo.controllers;
 
-import netgloo.models.User;
-import netgloo.models.UserRepository;
+import netgloo.domain.User;
+import netgloo.domain.UserRepository;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;

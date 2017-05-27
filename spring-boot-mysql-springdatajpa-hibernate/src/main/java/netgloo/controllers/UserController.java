@@ -1,20 +1,26 @@
 package netgloo.controllers;
 
-import netgloo.models.User;
-import netgloo.models.UserDao;
-
+import netgloo.domain.User;
+import netgloo.domain.UserRepository;
+import netgloo.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
- * A class to test interactions with the MySQL database using the UserDao class.
+ * A class to test interactions with the MySQL database using the UserRepository class.
  *
  * @author netgloo
  */
 @Controller
 public class UserController {
+
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   // ------------------------
   // PUBLIC METHODS
@@ -29,11 +35,11 @@ public class UserController {
    */
   @RequestMapping("/create")
   @ResponseBody
-  public String create(String email, String name) {
+  public String create(String email, String name, int age) {
     User user = null;
     try {
-      user = new User(email, name);
-      userDao.save(user);
+      user = new User(email, name, age);
+      userRepository.save(user);
     }
     catch (Exception ex) {
       return "Error creating the user: " + ex.toString();
@@ -49,10 +55,10 @@ public class UserController {
    */
   @RequestMapping("/delete")
   @ResponseBody
-  public String delete(long id) {
+  public String delete(String id) {
     try {
       User user = new User(id);
-      userDao.delete(user);
+      userRepository.delete(user);
     }
     catch (Exception ex) {
       return "Error deleting the user: " + ex.toString();
@@ -61,29 +67,77 @@ public class UserController {
   }
   
   /**
-   * /get-by-email  --> Return the id for the user having the passed email.
+   * /get single user by email  --> Return the id for the user having the passed email.
    * 
    * @param email The email to search in the database.
    * @return The user id or a message error if the user is not found.
    */
-  @RequestMapping("/get-by-email")
+  @RequestMapping("/findByEmail")
   @ResponseBody
   public String getByEmail(String email) {
-    String userId;
-    try {
-      User user = userDao.findByEmail(email);
-      userId = String.valueOf(user.getId());
-    }
-    catch (Exception ex) {
-      return "User not found";
-    }
-    return "The user id is: " + userId;
+    return "The user id is: " + userService.getUserIdByEmail(email);
   }
-  
+
+  /**
+   * /get user collection by name  --> Return the id for the user having the passed name.
+   *
+   * @param name The name to search in the database.
+   * @return The user id or a message error if the user is not found.
+   */
+  @RequestMapping("/findUsers")
+  @ResponseBody
+  public String findUsers(String name) {
+    log.info("findUsers by name={}", name);
+    List<User> users = userService.getUsersByName(name);
+    for (User single : users) {
+      log.info("find user id {}" + single.getId());
+    }
+    return "find user count is " + users.size();
+  }
+
+  /**
+   * /get single user by name  --> Return the id for the user having the passed name.
+   *
+   * @param name The name to search in the database.
+   * @return The user id or a message error if the user is not found.
+   */
+  @RequestMapping("/findUser")
+  @ResponseBody
+  public String findUser(String name) {
+    log.info("find user by name={}", name);
+    User user = userService.getUserByName(name);
+    return "find user name is " + user.getName();
+  }
+
+  /**
+   * find the oldest user
+   *
+   * @return
+   */
+  @RequestMapping("/findOldestUser")
+  @ResponseBody
+  public String getOldestUser() {
+    String userName = userService.getOldestUser();
+    return "Oldest user is " + userName;
+  }
+
+  /**
+   *
+   * @param email
+   * @param name
+   * @return
+   */
+  @RequestMapping("/updateEmail")
+  @ResponseBody
+  public String updateEmail(String email, String name) {
+    int count = userService.updateEmailByName(email, name);
+    return "successfully update user count " + count;
+  }
+
   /**
    * /update  --> Update the email and the name for the user in the database 
    * having the passed id.
-   * 
+   *
    * @param id The id for the user to update.
    * @param email The new email.
    * @param name The new name.
@@ -93,10 +147,10 @@ public class UserController {
   @ResponseBody
   public String updateUser(long id, String email, String name) {
     try {
-      User user = userDao.findOne(id);
+      User user = userRepository.findOne(id);
       user.setEmail(email);
       user.setName(name);
-      userDao.save(user);
+      userRepository.save(user);
     }
     catch (Exception ex) {
       return "Error updating the user: " + ex.toString();
@@ -109,6 +163,9 @@ public class UserController {
   // ------------------------
 
   @Autowired
-  private UserDao userDao;
+  private UserRepository userRepository;
+
+  @Autowired
+  private UserService userService;
   
 } // class UserController
