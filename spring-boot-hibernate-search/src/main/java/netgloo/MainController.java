@@ -1,4 +1,4 @@
-package netgloo.controllers;
+package netgloo;
 
 import netgloo.domain.User;
 import netgloo.search.UserSearch;

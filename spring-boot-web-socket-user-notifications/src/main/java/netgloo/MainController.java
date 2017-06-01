@@ -1,4 +1,4 @@
-package netgloo.controllers;
+package netgloo;
 
 import netgloo.Notification;
 import netgloo.services.NotificationService;

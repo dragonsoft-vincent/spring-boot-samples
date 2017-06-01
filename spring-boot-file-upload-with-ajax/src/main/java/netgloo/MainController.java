@@ -1,4 +1,4 @@
-package netgloo.controllers;
+package netgloo;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
