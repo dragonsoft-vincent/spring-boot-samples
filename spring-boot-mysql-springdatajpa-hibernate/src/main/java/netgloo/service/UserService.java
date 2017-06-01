@@ -20,4 +20,7 @@ public interface UserService {
     User getUserByName(String name);
 
     int updateEmailByName(String email, String name);
+
+    User createUserWithHobbies(String email, String name, int age, String[] hobbyNames);
 }
+

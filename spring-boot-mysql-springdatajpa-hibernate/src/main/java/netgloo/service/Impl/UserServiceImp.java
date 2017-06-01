@@ -1,6 +1,8 @@
 package netgloo.service.Impl;
 
 import com.google.common.collect.Lists;
+import netgloo.domain.Hobby;
+import netgloo.domain.HobbyRepository;
 import netgloo.domain.User;
 import netgloo.domain.UserRepository;
 import netgloo.service.UserService;
@@ -26,6 +28,9 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    HobbyRepository hobbyRepository;
 
     @Override
     @Transactional
@@ -62,5 +67,22 @@ public class UserServiceImp implements UserService {
     @Transactional
     public int updateEmailByName(String email, String name) {
         return userRepository.modifyEmailByName(email, name);
+    }
+
+    @Override
+    @Transactional
+    public User createUserWithHobbies(String email, String name, int age, String[] hobbyNames) {
+        User user = new User(email, name, age);
+        userRepository.save(user);
+
+        for (int i = 0; i < hobbyNames.length; i++) {
+            Hobby hobby = new Hobby();
+            hobby.setName(hobbyNames[i]);
+            hobby.setCost(i * 10);
+            hobby.setUser(user);
+            hobbyRepository.save(hobby);
+        }
+
+        return user;
     }
 }

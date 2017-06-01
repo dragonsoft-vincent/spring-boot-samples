@@ -1,11 +1,9 @@
 package netgloo.web;
 
-import netgloo.domain.Hobby;
-import netgloo.domain.HobbyRepository;
 import netgloo.domain.User;
-import netgloo.domain.UserRepository;
+import netgloo.service.HobbyService;
 import netgloo.service.UserService;
-import netgloo.service.vo.UserCostSummary;
+import netgloo.service.vo.UserCostSummaryVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,38 +40,10 @@ public class UserController {
   @RequestMapping(value = "/create", method = RequestMethod.POST)
   @ResponseBody
   public String create(String email, String name, int age, String[] hobbyNames) {
-    User user = new User(email, name, age);
-    userRepository.save(user);
-
-    for (int i = 0; i < hobbyNames.length; i++) {
-      Hobby hobby = new Hobby();
-      hobby.setName(hobbyNames[i]);
-      hobby.setCost(i * 10);
-      hobby.setUser(user);
-      hobbyRepository.save(hobby);
-    }
-
+    User user = userService.createUserWithHobbies(email, name, age, hobbyNames);
     return "User successfully created! (id = " + user.getId() + ")";
   }
-  
-  /**
-   * /delete  --> Delete the user having the passed id.
-   * 
-   * @param id The id of the user to delete
-   * @return A string describing if the user is successfully deleted or not.
-   */
-  @RequestMapping(value = "/delete", method = RequestMethod.POST)
-  @ResponseBody
-  public String delete(String id) {
-    try {
-      User user = new User(id);
-      userRepository.delete(user);
-    }
-    catch (Exception ex) {
-      return "Error deleting the user: " + ex.toString();
-    }
-    return "User succesfully deleted!";
-  }
+
   
   /**
    * /get single user by email  --> Return the id for the user having the passed email.
@@ -138,8 +108,8 @@ public class UserController {
   @RequestMapping(value = "/avgCostByAge", method = RequestMethod.GET)
   @ResponseBody
   public String getAvgCostByAge(int age) {
-    Page<UserCostSummary> summary = hobbyRepository.getCostSummaryByAge(age, new PageRequest(0, 10));
-    for (UserCostSummary single : summary) {
+    Page<UserCostSummaryVO> summary = hobbyService.getAvgHobbyCostByAge(age, new PageRequest(0, 10));
+    for (UserCostSummaryVO single : summary) {
       log.info(" avg cost: " + single.getAverageCost());
     }
     return "Avg cost";
@@ -158,41 +128,14 @@ public class UserController {
     return "successfully update user count " + count;
   }
 
-  /**
-   * /update  --> Update the email and the name for the user in the database 
-   * having the passed id.
-   *
-   * @param id The id for the user to update.
-   * @param email The new email.
-   * @param name The new name.
-   * @return A string describing if the user is succesfully updated or not.
-   */
-  @RequestMapping(value = "/update", method = RequestMethod.POST)
-  @ResponseBody
-  public String updateUser(String id, String email, String name) {
-    try {
-      User user = userRepository.findOne(id);
-      user.setEmail(email);
-      user.setName(name);
-      userRepository.save(user);
-    }
-    catch (Exception ex) {
-      return "Error updating the user: " + ex.toString();
-    }
-    return "User succesfully updated!";
-  }
-
   // ------------------------
   // PRIVATE FIELDS
   // ------------------------
 
   @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
   private UserService userService;
 
   @Autowired
-  private HobbyRepository hobbyRepository;
+  private HobbyService hobbyService;
   
 } // class UserController
